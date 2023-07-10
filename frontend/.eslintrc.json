@@ -1,0 +1,49 @@
+{
+  "plugins": ["prettier", "@typescript-eslint"],
+  "extends": [
+    "airbnb",
+    "airbnb-typescript",
+    "next/core-web-vitals",
+    "plugin:prettier/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parserOptions": {
+    "project": "./tsconfig.eslint.json"
+  },
+  "rules": {
+    // "prettier/prettier": "error",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ],
+    "import/prefer-default-export": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "react/jsx-props-no-spreading": "off", // Allow Prop spreading( _app.tsx uses spread operator)
+    "react/function-component-definition": "off", // Allow function Components to be function declaration
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/interactive-supports-focus": "off",
+    "jsx-a11y/no-noninteractive-element-interactions": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "no-plusplus": "off",
+    "react/require-default-props": "off",
+    "no-promise-executor-return": "off",
+    "react/jsx-no-constructed-context-values": "off",
+    "react/no-unescaped-entities": "off",
+    "consistent-return": "off",
+    "no-case-declarations": "off",
+    "@typescript-eslint/naming-convention": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "eqeqeq": "off",
+    "no-param-reassign": "off",
+    "no-return-assign": "off",
+    "jsx-a11y/label-has-associated-control": [
+      2,
+      {
+        "controlComponents": ["Input"],
+        "depth": 3
+      }
+    ]
+  }
+}
