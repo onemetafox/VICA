@@ -11,6 +11,11 @@ const nextConfig = {
         destination: '/account/profile',
         permanent: true,
       },
+      {
+        source: '/emailverified',
+        destination: '/emailverified',
+        permanent: true,
+      },
     ];
   },
   env: {
