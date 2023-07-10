@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  trailingSlash: true,
   reactStrictMode: true,
   eslint: {
     dirs: ['.'],
@@ -9,11 +10,6 @@ const nextConfig = {
       {
         source: '/account',
         destination: '/account/profile',
-        permanent: true,
-      },
-      {
-        source: '/emailverified',
-        destination: '/emailverified',
         permanent: true,
       },
     ];

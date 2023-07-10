@@ -22,10 +22,12 @@ const Footer = ({ bgColor = 'bg-lightGray' }: Props) => {
     >
       <div className="flex w-full flex-wrap justify-between">
         <div className="w-1/4 lg:hidden">
-          <div className="flex items-center">
-            <Image src={logo} width={70} height={70} />
-            <h1 className="ml-3 font-poppinsLarge text-2xl font-black">ViCA</h1>
-          </div>
+          <Link href = "/">
+            <div className="flex cursor-pointer items-center">
+              <Image src={logo} width={70} height={70} />
+              <h1 className="ml-3 font-poppinsLarge text-2xl font-black">ViCA</h1>
+            </div>
+          </Link>
           <p className="mt-2 text-justify">
             Buy and sell digital currencies. Get your ViCA account to start
             accepting payments and sending money.
