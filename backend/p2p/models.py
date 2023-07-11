@@ -177,3 +177,13 @@ class Dispute(models.Model):
 
     def __str__(self) -> str:
         return f"dispute-{self.order}-{self.user}"
+
+
+class Exchange(models.Model):
+    order = models.OneToOneField(Order, verbose_name="Order related to an exchange", on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f'{self.order.order_no}-{self.order.user}'
+    
+    created_at = models.DateTimeField("Created at", auto_now_add=True)
+    updated_at = models.DateTimeField("Updated at", auto_now=True)

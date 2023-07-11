@@ -248,13 +248,24 @@ class EthereumWallet(models.Model):
             raise ValidationError("You don't have enough balance!")
         if _type == 'ETHER':
             amount_in_wei = w3.toWei(amount, 'ether')
-            return create_ether_transaction(settings.ETHEREUM_WALLET_ADDRESS, recipient_address, amount_in_wei, settings.ETHEREUM_WALLET_KEY)
+            tx =  create_ether_transaction(settings.ETHEREUM_WALLET_ADDRESS, recipient_address, amount_in_wei, settings.ETHEREUM_WALLET_KEY)
+            if tx:
+                self.balance -= amount
+                self.save()
         elif _type == 'VICA':
-            return create_vica_transaction(settings.ETHEREUM_WALLET_ADDRESS, recipient_address, amount, settings.ETHEREUM_WALLET_KEY)
+            tx = create_vica_transaction(settings.ETHEREUM_WALLET_ADDRESS, recipient_address, amount, settings.ETHEREUM_WALLET_KEY)
+            if tx:
+                self.vica_balance -= amount
+                self.save()
         elif _type == 'USDT':
-            return create_usdt_transaction(settings.ETHEREUM_WALLET_ADDRESS, recipient_address, amount, settings.ETHEREUM_WALLET_KEY)
-            
-        return None 
+            tx = create_usdt_transaction(settings.ETHEREUM_WALLET_ADDRESS, recipient_address, amount, settings.ETHEREUM_WALLET_KEY)
+            if tx:
+                self.usdt_balance -= amount
+                self.save()
+        else:
+            return None
+ 
+        return tx 
         
 
     def save(self, *args, **kwargs):
@@ -318,6 +329,7 @@ class ETHTransaction(models.Model):
         PENDING = "PENDING", "Pending"
         CONFIRMED = "CONFIRMED", "Confirmed"
         CANCELLED = "CANCELLED", "Cancelled"
+        FAILED = "FAILED", "Failed"
 
 
     wallet = models.ForeignKey("wallet.EthereumWallet", verbose_name=_("Transaction wallet"), null=True, on_delete=models.SET_NULL)
@@ -342,7 +354,10 @@ class ETHTransaction(models.Model):
                 data = w3.eth.get_transaction_receipt(self.hash)
                 self.fees = data['gasUsed'] * data['effectiveGasPrice']
                 self.timestamp =  w3.eth.get_block(data['blockNumber']).timestamp
-                self.status = ETHTransaction.Status.CONFIRMED
+                if data.status == 1:
+                    self.status = ETHTransaction.Status.CONFIRMED
+                else:
+                    self.status = ETHTransaction.Status.FAILED
                 self.save()
             except:
                 pass

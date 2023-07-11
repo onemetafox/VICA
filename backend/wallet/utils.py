@@ -95,17 +95,21 @@ def get_ether_provider():
 def create_ether_transaction(sender_address, recipient_address, amount, private_key, gas_limit=None, currency='wei'):
     w3 = Web3(get_ether_provider())
     acct = w3.eth.account.from_key(private_key)
-    nonce = w3.eth.getTransactionCount(sender_address)
+    _from = w3.toChecksumAddress(sender_address)
+    _to = w3.toChecksumAddress(recipient_address)
+    nonce = w3.eth.getTransactionCount(_from)
 
     transaction = {
-        'from': sender_address,
-        'to': recipient_address,
+        'from': _from,
+        'to': _to,
         'gasPrice': w3.eth.gas_price,
     }
     if not gas_limit:
         gas_limit = w3.eth.estimate_gas(transaction)
     transaction_fees = estimate_ether_fees(transaction['from'], transaction['to'], transaction['gasPrice'])
-
+    transaction_fees_in_usd = convert_currencies('ETH', 'USD', w3.fromWei(transaction_fees, 'ether'))
+    if transaction_fees_in_usd < 3.6:
+        transaction_fees = w3.toWei(convert_currencies('USD', 'ETH', 3.6), 'ether')
     transaction['gas'] = gas_limit
     transaction['value'] = amount - transaction_fees
     transaction['nonce'] = nonce
@@ -130,6 +134,8 @@ def create_usdt_transaction(sender_address, recipient_address, amount, private_k
 
     transaction_fees = w3.fromWei(estimate_usdt_fees(sender_address, recipient_address, amount, w3.eth.gas_price), 'ether')
     transaction_fees_in_usd = convert_currencies('ETH', 'USD', transaction_fees)
+    if transaction_fees_in_usd < 3.6:
+        transaction_fees_in_usd = 3.6
 
     amount_to_send = int(amount) - math.ceil(transaction_fees_in_usd * 1000000)
     txn = contract.functions.transfer(
@@ -160,15 +166,19 @@ def create_vica_transaction(sender_address, recipient_address, amount, private_k
             int(amount), 
             ).estimateGas({'from': _from})
 
-    transaction_fees = estimate_vica_fees(sender_address, recipient_address, amount, w3.eth.gas_price)
+    transaction_fees = w3.fromWei(estimate_vica_fees(sender_address, recipient_address, amount, w3.eth.gas_price), 'ether')
+    transaction_fees_in_usd = convert_currencies('ETH', 'USD', transaction_fees)
     transaction_fees_in_vica = convert_currencies('ETH', 'VICA', transaction_fees)
+
+    if transaction_fees_in_usd < 3.6:
+        transaction_fees_in_vica = convert_currencies('USD', 'VICA', 3.6)
     amount_to_send = int(amount) - math.ceil(transaction_fees_in_vica * 1000000000000000000)
     txn = contract.functions.transfer(
         _to,
-        int(amount_to_send),
+        amount_to_send,
     ).buildTransaction({
         'chainId': 1,
-        'gas': gas_limit,
+        'gas': int(gas_limit * 1.1),
         'maxFeePerGas': w3.toWei('24', 'gwei'),
         'maxPriorityFeePerGas': w3.toWei('1.5', 'gwei'),
         'nonce': nonce,
@@ -245,6 +255,8 @@ def estimate_vica_fees(sender, recipient, amount, gas_price):
         recipient,
         int(amount), 
         ).estimateGas({'from': sender})
+    
+    gas_limit *= 1.1
 
-    return gas_limit * gas_price
+    return int(gas_limit) * gas_price
 

@@ -100,7 +100,10 @@ class UserDetailsSerializer(serializers.ModelSerializer):
         read_only_fields = ('email',)
 
     def get_is_email_verified(self, instance):
-        return instance.emailaddress_set.last().verified
+        if instance.emailaddress_set.exists():
+            return instance.emailaddress_set.last().verified
+
+        return False
 
     def get_reviews(self, obj):
         positive = 0

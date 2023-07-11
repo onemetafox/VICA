@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from rest_framework import serializers
 
 from ..models import BitcoinWallet, EthereumWallet, BTCTransaction, ETHTransaction
@@ -62,10 +64,10 @@ class BTCTransactionSerializer(serializers.ModelSerializer):
             'recipient_address',
             'amount',
             'hash',
-            'confirmed',
+            'status',
             'fees',
         ]
-        read_only_fields = ('hash', 'confirmed', 'fees',)
+        read_only_fields = ('hash', 'status', 'fees',)
 
     def validate(self, attrs):
         # ..
@@ -89,12 +91,13 @@ class ETHTransactionSerializer(serializers.ModelSerializer):
             'from_address',
             'amount',
             'hash',
-            'confirmed',
+            'status',
             'fees',
             'currency_type',
+            'currency',
             'timestamp'
         ]
-        read_only_fields = ('hash', 'confirmed', 'fees',)
+        read_only_fields = ('hash', 'status', 'fees', 'currency')
 
     def validate(self, attrs):
         # ..
@@ -110,5 +113,7 @@ class ETHTransactionSerializer(serializers.ModelSerializer):
         if not hash:
             raise serializers.ValidationError('Something went wrong! please try again or contact the administrator')
         validated_data['hash'] = hash
+        validated_data['currency'] = currency_type
+        validated_data['from_address'] = settings.ETHEREUM_WALLET_ADDRESS
         transaction = ETHTransaction.objects.create(**validated_data)
         return transaction

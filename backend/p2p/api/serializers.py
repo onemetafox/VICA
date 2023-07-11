@@ -5,6 +5,23 @@ from ..utils import validate_amount, calculate_amount_received
 
 
 
+class ExchangeSerializer(serializers.ModelSerializer):
+    order_no = serializers.CharField(source='order.order_no', read_only=True)
+    amount = serializers.CharField(source='order.amount_received', read_only=True)
+    price = serializers.CharField(source='order.price', read_only=True)
+    class Meta:
+        model = Review
+        fields = (
+            'order_no',
+            'user',
+            'amount',
+            'price',
+        )
+
+    def create(self, validated_data):
+        return super().create(validated_data)
+
+
 class ReviewSerializer(serializers.ModelSerializer):
     order_no = serializers.CharField(source='order.order_no', read_only=True)
     class Meta:

@@ -149,3 +149,9 @@ def make_service_crypto_payment(order, offer):
     owner_ether_wallet.save()
     user_btc_wallet.save()
     user_ether_wallet.save()
+
+def get_offers_price_average(currency):
+    from p2p.models import Offer
+    from django.db.models import Avg
+
+    return Offer.objects.aggregate(Avg('price'))

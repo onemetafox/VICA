@@ -20,8 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
-from dj_rest_auth.views import PasswordResetConfirmView
-from users.api.views import VerifyEmailView
+from users.api.views import VerifyEmailView, CustomPasswordResetConfirmView
 
 admin.site.site_title = 'VICA ADMIN'
 admin.site.site_header = 'VICA ADMIN'
@@ -35,7 +34,7 @@ urlpatterns = [
         name='account_confirm_email'
     ),
     path('rest-auth/registration/', include('dj_rest_auth.registration.urls')),
-    path('rest-auth/password/reset/confirm/<str:uidb64>/<str:token>', PasswordResetConfirmView.as_view(),
+    path('rest-auth/password/reset/confirm/<str:uidb64>/<str:token>', CustomPasswordResetConfirmView.as_view(),
             name='password_reset_confirm'),
     path('wallet/', include('wallet.urls', namespace='wallet')),
     path('p2p/', include('p2p.urls', namespace='p2p')),

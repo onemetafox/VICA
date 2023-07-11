@@ -2,6 +2,7 @@ from decimal import Decimal
 from django.utils import timezone
 from django.db import models
 from dateutil.relativedelta import relativedelta
+from constance import config
 
 
 class ArbitrageSubscription(models.Model):
@@ -64,20 +65,20 @@ class ArbitrageTransaction(models.Model):
         period_percent = 0
         day_percent = 0
         if self.staking_period['years'] >= 1:
-            period_percent += 60
-            day_percent += 60 / 365
+            period_percent += config.ARBITRAGE_YEAR_PERCENT
+            day_percent += config.ARBITRAGE_YEAR_PERCENT / 365
         if self.staking_period['months'] >= 9:
-            period_percent += 40
-            day_percent += 40 / 360
+            period_percent += config.ARBITRAGE_9_MONTHS_PERCENT
+            day_percent += config.ARBITRAGE_9_MONTHS_PERCENT / 360
         elif self.staking_period['months'] >= 6:
-            period_percent += 27
-            day_percent += 27 / 270
+            period_percent += config.ARBITRAGE_6_MONTHS_PERCENT
+            day_percent += config.ARBITRAGE_6_MONTHS_PERCENT / 270
         elif self.staking_period['months'] >= 3:
-            period_percent += 12
-            day_percent += 12 / 180
+            period_percent += config.ARBITRAGE_3_MONTHS_PERCENT
+            day_percent += config.ARBITRAGE_3_MONTHS_PERCENT / 180
         else:
-            period_percent += 5
-            day_percent += 5 / 90
+            period_percent += config.ARBITRAGE_BELLOW_3_MONTHS_PERCENT
+            day_percent += config.ARBITRAGE_BELLOW_3_MONTHS_PERCENT / 90
 
         return {
             "period_percent": period_percent,

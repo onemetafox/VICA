@@ -27,11 +27,14 @@ app.conf.beat_schedule = {
     'transfer-to-main-wallet-task': {
         'task': 'wallet.tasks.transfer_to_main_wallet_task',
         'schedule': crontab(minute=0, hour=0),
-        # 'args': (16, 16)
     },
     'check_unconfirmed_internal_transactions': {
         'task': 'wallet.tasks.check_unconfirmed_internal_transactions',
         'schedule': crontab(minute=0, hour='*/1'),
+    },
+    'check_unconfirmed_external_transactions': {
+        'task': 'wallet.tasks.check_unconfirmed_external_transactions',
+        'schedule': crontab(minute='*/30'),
     },
     'check_for_0_02_eth_in_all_wallets': {
         'task': 'wallet.tasks.check_for_0_02_eth_in_all_wallets',

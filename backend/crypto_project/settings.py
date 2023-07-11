@@ -64,7 +64,7 @@ INSTALLED_APPS = [
     'arbitrage',
 ]
 
-SITE_ID = os.environ.get('SITE_ID')
+SITE_ID = int(os.environ.get('SITE_ID'))
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -182,7 +182,7 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 
 OLD_PASSWORD_FIELD_ENABLED = True
 
-REST_AUTH_PW_RESET_USE_SITES_DOMAIN = False
+REST_AUTH_PW_RESET_USE_SITES_DOMAIN = True
 
 DEFAULT_FROM_EMAIL = "Vica INC"
 
@@ -224,6 +224,8 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_serializer
 CELERY_RESULT_SERIALIZER = "json"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_RESULT_PERSISTENT = True
 
 
 ETHERSCAN_API_KEY = os.environ.get("ETHERSCAN_API_KEY")
@@ -233,6 +235,11 @@ CONSTANCE_REDIS_CONNECTION = 'redis://redis:6379/0'
 
 CONSTANCE_CONFIG = {
     'MIN_FOR_TRANSFER_TO_MAIN_WALLET': (Decimal(100), 'The minimum amount a wallet should have to transfer its balance to the main wallet', Decimal),
+    'ARBITRAGE_YEAR_PERCENT': (Decimal(60), 'The arbitrage revenue percent for a year (12 months) and above..', Decimal),
+    'ARBITRAGE_9_MONTHS_PERCENT': (Decimal(40), 'The arbitrage revenue percent for 9 months and above..', Decimal),
+    'ARBITRAGE_6_MONTHS_PERCENT': (Decimal(27), 'The arbitrage revenue percent for 6 months and above..', Decimal),
+    'ARBITRAGE_3_MONTHS_PERCENT': (Decimal(12), 'The arbitrage revenue percent for 3 months and above..', Decimal),
+    'ARBITRAGE_BELLOW_3_MONTHS_PERCENT': (Decimal(5), 'The arbitrage revenue percent for less than 3 months', Decimal),
 }
 if not DEBUG:
     STATIC_ROOT = os.path.join(BASE_DIR, 'static')
@@ -244,3 +251,6 @@ MEDIA_ROOT = BASE_DIR / 'mediafiles/'
 
 # URL used to access the media
 MEDIA_URL = '/media/'
+
+# Frontend domain
+FRONTEND_DOMAIN = 'https://crypto-wallet-web.vercel.app'

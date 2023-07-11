@@ -1,5 +1,6 @@
 from decimal import Decimal
 from django.conf import settings
+from django.db.models import Q
 from web3 import Web3
 from rest_framework import status
 from rest_framework import viewsets, mixins, permissions
@@ -49,7 +50,7 @@ class ETHTransactionCreateListRetrieveViewSet(mixins.CreateModelMixin, mixins.Li
 
     def get_queryset(self):
         check_for_new_eth_transactions.apply_async((self.request.user.ethereum_wallet.address,))
-        return ETHTransaction.objects.filter(wallet=self.request.user.ethereum_wallet)
+        return ETHTransaction.objects.filter(~Q(recipient_address__iexact=settings.ETHEREUM_WALLET_ADDRESS), wallet=self.request.user.ethereum_wallet,)
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
@@ -57,16 +58,15 @@ class ETHTransactionCreateListRetrieveViewSet(mixins.CreateModelMixin, mixins.Li
         return response
     
     def list(self, request, *args, **kwargs):
-        user = request.user
         response = super().list(request, *args, **kwargs)
-        response.data = [{'hash': tx['hash'], 'from': user.ethereum_wallet.address, 'to': tx['recipient_address'], 'amount': tx['amount']} for tx in response.data]
+        response.data = [{'hash': tx['hash'], 'from': tx['from_address'], 'to': tx['recipient_address'], 'amount': tx['amount'], 'currency': tx['currency'], 'timestamp': tx['timestamp'], 'status': tx['status']} for tx in response.data]
         return response
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.update_info()
         serializer = self.get_serializer(instance)
-        data = {'hash': serializer.data['hash'], 'from': serializer.data['from_address'], 'to': serializer.data['recipient_address'], 'amount': serializer.data['amount'], 'fees': serializer.data['fees'], 'timestamp': serializer.data['timestamp'], 'confirmed': serializer.data['confirmed']}
+        data = {'hash': serializer.data['hash'], 'from': serializer.data['from_address'], 'to': serializer.data['recipient_address'], 'amount': serializer.data['amount'], 'fees': serializer.data['fees'], 'timestamp': serializer.data['timestamp'], 'status': serializer.data['status']}
         return Response(data)
 
 

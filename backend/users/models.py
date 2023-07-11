@@ -23,8 +23,7 @@ class User(AbstractUser):
     )
     country = models.CharField(max_length=100, blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True)
-    photo = models.ImageField(
-        default="", upload_to=photo_upload_path)
+    photo = models.ImageField(blank=True, null=True, upload_to=photo_upload_path)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
