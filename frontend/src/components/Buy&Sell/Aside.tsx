@@ -55,7 +55,7 @@ const Aside = ({
   const mutationCoinPrice = useMutateCoinsConversion();
   const mutationPaymentMethodPrice = useMutateCoinsConversion();
 
-  const paymentMethod = filterData.paymentMethodObject.name;
+  const [paymentMethod, setPaymentMethod] = useState(filterData.paymentMethodObject.name);
   if (locationCountry && ownerCountry === '') {
     setOwnerCountry(locationCountry);
   }
@@ -180,7 +180,7 @@ const Aside = ({
         <PaymentMethods
           isOpen={isOpenPaymentMethods}
           close={() => setIsOpenPaymentMethods(false)}
-          onSelect={(value: string) => (paymentMethodRef.current = value)}
+          onSelect={(value: string) => {paymentMethodRef.current = value; setPaymentMethod(value)}}
           firstCoin={state.coinList1.selectedCoin}
         />
         <label className="lg:space-y-2">
