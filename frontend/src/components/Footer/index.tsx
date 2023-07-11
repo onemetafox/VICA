@@ -43,7 +43,7 @@ const Footer = ({ bgColor = 'bg-lightGray' }: Props) => {
       <div className="flex w-full flex-wrap justify-between">
         <div className="w-1/4 lg:hidden">
           <Link href="/">
-            <div className="flex items-center">
+            <div className="flex cursor-pointer items-center">
               <Image src={logo} width={70} height={70} />
               <h1 className="ml-3 font-poppinsLarge text-2xl font-black">ViCA</h1>
             </div>
