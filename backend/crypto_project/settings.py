@@ -64,7 +64,7 @@ INSTALLED_APPS = [
     'arbitrage',
 ]
 
-SITE_ID = int(os.environ.get('SITE_ID'))
+SITE_ID = os.environ.get('SITE_ID')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -182,7 +182,7 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 
 OLD_PASSWORD_FIELD_ENABLED = True
 
-REST_AUTH_PW_RESET_USE_SITES_DOMAIN = True
+REST_AUTH_PW_RESET_USE_SITES_DOMAIN = False
 
 DEFAULT_FROM_EMAIL = "Vica INC"
 
