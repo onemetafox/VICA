@@ -1,6 +1,6 @@
 import React from 'react';
 import Popup from 'reactjs-popup';
-import { coinFullName } from 'src/utils/coins-full-name';
+import { coinFullName } from 'src/utils/coins-full-name2';
 import { useFetchPaymentMethods } from 'src/queries/paymentMethods';
 import { CoinsTypes, isCoinTypeOfCoinsList } from 'src/types/coins';
 import { APIPAYMENTMETHOD, APILISTMETHODS } from 'src/types/paymentMethods';
@@ -23,8 +23,10 @@ type Props = {
 
 const PaymentMethods = ({ isOpen, close, onSelect, firstCoin }: Props) => {
   const { data } = useFetchPaymentMethods();
+  console.log('this is data', data);
+
   if (!data) {
-    return <h1>Loading ...</h1>;
+    return <h1> </h1>;
   }
   const digitalCurrencies: APILISTMETHODS = data?.filter(
     (paymentMethod: APIPAYMENTMETHOD) =>

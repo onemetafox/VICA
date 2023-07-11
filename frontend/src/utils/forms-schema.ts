@@ -76,3 +76,18 @@ export const ChangePasswordSchema = Yup.object({
     'Passwords must match'
   ),
 });
+
+export const PasswordConfirmSchema = Yup.object({
+  password1: Yup.string()
+    .required('Password is required')
+    .matches(
+      /* eslint-disable */
+      /^(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+      '* Password must Contain 8 Characters, One Number and One Special Case Character'
+    ),
+  password2: Yup.string().oneOf(
+    [Yup.ref('password'), null],
+    'Passwords must match'
+  ),
+});
+

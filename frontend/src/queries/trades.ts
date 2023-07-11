@@ -61,6 +61,31 @@ export const useSendMessage = () => {
   return mutation;
 };
 
+export const useSendReport = () => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation(
+    (dt: CreateOrderData) => AuthService.SendReport(dt),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['orders']);
+        toast.success(
+          'Thank you for reaching out to us. We appreciate your patience while we review your request. We will respond to your inquiry within 48 hours. If you have any further questions or concerns in the meantime, please feel free to reach out again.'
+        );
+      },
+      onError: (error: any) => {
+        if (typeof error?.non_field_errors[0] === 'string') {
+          toast.error(error?.non_field_errors[0]);
+        } else if (typeof error?.offer[0] === 'string') {
+          toast.error(error?.offer[0]);
+        } else {
+          toast.error('Error: something went wrong');
+        }
+      },
+    }
+  );
+  return mutation;
+};
+
 export const useSendFeedback = (orderId: string) => {
   const queryClient = useQueryClient();
   const mutation = useMutation(

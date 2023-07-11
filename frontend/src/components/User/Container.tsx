@@ -25,23 +25,27 @@ const Container = ({ type, children }: Props) => {
           </div>
         </Link>
       </nav>
-      <div className="flex flex-col justify-center items-center w-full sm:w-full sm:px-3 flex-grow">
-        <h1 className="text-3xl leading-relaxed sm:text-xl ">
-          {type === 'register' ? 'Register' : 'Login'}
-        </h1>
+      {type === 'PasswordConfirm' ? (
+        <div className="flex justify-center items-center">{children}</div>
+      ) : (
+        <div className="flex flex-col justify-center items-center w-full sm:w-full sm:px-3 flex-grow">
+          <h1 className="text-3xl leading-relaxed sm:text-xl ">
+            {type === 'register' ? 'Register' : 'Login'}
+          </h1>
 
-        <p className="text-lightBlack text-center">
-          {type === 'register'
-            ? 'Already have an account ?'
-            : "Don't have an account yet ?"}{' '}
-          <Link href={type === 'register' ? '/login' : '/register'}>
-            <span className="text-blue-700 cursor-pointer hover:text-blue-500">
-              {type === 'register' ? 'Login' : 'Register'}
-            </span>
-          </Link>
-        </p>
-        {children}
-      </div>
+          <p className="text-lightBlack text-center">
+            {type === 'register'
+              ? 'Already have an account ?'
+              : "Don't have an account yet ?"}{' '}
+            <Link href={type === 'register' ? '/login' : '/register'}>
+              <span className="text-blue-700 cursor-pointer hover:text-blue-500">
+                {type === 'register' ? 'Login' : 'Register'}
+              </span>
+            </Link>
+          </p>
+          {children}
+        </div>
+      )}
     </div>
   );
 };

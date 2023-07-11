@@ -126,16 +126,16 @@ const Dashboard = ({ user, transactions }) => {
                     </Table.Cell>
                     <Table.Cell>
                       {`${
-                        transaction?.stacking_period?.years
-                          ? `${transaction?.stacking_period?.years} years,`
+                        transaction?.staking_period?.years
+                          ? `${transaction?.staking_period?.years} years,`
                           : ''
                       }  ${
-                        transaction?.stacking_period?.months
-                          ? `${transaction?.stacking_period?.months} months,`
+                        transaction?.staking_period?.months
+                          ? `${transaction?.staking_period?.months} months,`
                           : ''
                       } ${
-                        transaction?.stacking_period?.days
-                          ? `${transaction?.stacking_period?.days} days`
+                        transaction?.staking_period?.days
+                          ? `${transaction?.staking_period?.days} days`
                           : ''
                       }`}
                     </Table.Cell>
@@ -144,7 +144,7 @@ const Dashboard = ({ user, transactions }) => {
                         disabled={transaction?.status == 'ACTIVE' ? 0 : 1}
                         onClick={() => handleReqWithdraw(transaction?.id)}
                       >
-                        {!transaction?.status == 'PENDING'
+                        {!transaction?.status || transaction?.status == 'ACTIVE'
                           ? 'Request Withdraw'
                           : 'Request Sent'}
                       </Button>

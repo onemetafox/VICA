@@ -1,6 +1,21 @@
+import { useRouter } from 'next/router';
 import React from 'react';
 import Wrapper from 'src/components/Buy&Sell/Wrapper';
+import Intro from 'src/components/Wallet/Intro';
+import { useFetchUser } from 'src/queries/user';
 
-const Buy = () => <Wrapper variant="SELL" />;
+const Buy = () => {
+  const { data, status } = useFetchUser();
 
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+  if (status === 'error') {
+    return <div>An error has occurred</div>;
+  }
+  if (!data) {
+    return <Intro />;
+  }
+  return <Wrapper variant="SELL" />;
+};
 export default Buy;

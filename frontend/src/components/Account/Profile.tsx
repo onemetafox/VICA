@@ -64,6 +64,14 @@ const Profile = ({ user }: any) => {
                 <CgClose className="text-2xl text-rose-700 mr-5 mt-1 sm:text-2xl sm:mr-3" />
               )}
             </p>
+            <p className="flex justify-between">
+              <span className="text-darkGray mt-1">E-BOT Subscription</span>
+              {user?.has_active_arbitrage_account ? (
+                <CgCheck className="text-4xl text-green-400 mr-5 sm:text-2xl sm:mr-3" />
+              ) : (
+                <CgClose className="text-2xl text-rose-700 mr-5 mt-1 sm:text-2xl sm:mr-3" />
+              )}
+            </p>
           </div>
         </div>
       </div>

@@ -82,6 +82,15 @@ const Offer = () => {
   const paymentMethodType = urlParams.get('paymentMethodType');
   const paymentMethodInUsd = urlParams.get('paymentMethodInUsd');
   const orders = urlParams.get('orders');
+
+  console.log('mainCoinParam', mainCoinParam);
+  console.log('paymentMethodId', paymentMethodId);
+  console.log('paymentMethodName', paymentMethodName);
+  console.log('paymentMethodType', paymentMethodType);
+  console.log('paymentMethodInUsd', paymentMethodInUsd);
+  console.log('orders', orders);
+  console.log('paymentMethod', paymentMethod);
+
   if (isCoinTypeOfCoinsList(mainCoinParam)) {
     mainCoin = mainCoinParam;
   }
@@ -254,7 +263,8 @@ const Offer = () => {
             {buySell?.toLowerCase()} now
           </button>
           <div className="text-sm mt-5">
-            Reserve Bitcoin for this trade and start live chat with
+            Reserve {paymentMethodName}
+            (USD) for this trade and start live chat with
             <span className="text-blue-600 ml-1 cursor-pointer hover:text-blue-500">
               {userName}
             </span>

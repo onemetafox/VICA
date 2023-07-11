@@ -19,6 +19,7 @@ function CoinsDropdown({
 }: CoinsDropdownPropsType) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  console.log(selectedCoin);
 
   // handleOutsideClick
   useEffect(() => {

@@ -13,6 +13,7 @@ import {
   useWithdrawBtc,
   useWithdrawEth,
 } from 'src/queries/transactions';
+import toast from 'react-hot-toast';
 
 type Props = {
   coin: CoinsTypes;
@@ -53,6 +54,8 @@ const Card = ({
   const { mutate: transfer } = useArbitrageTransaction();
   const router = useRouter();
 
+  const estimate_fees = '';
+
   const resetForm = () => {
     setAmount(0.0);
     setAddress('');
@@ -66,6 +69,7 @@ const Card = ({
 
   const onActionClickStake = (action) => {
     if (!isSubscribed) {
+      toast.error('Please Subscribe to Start Staking !');
       router.push('/subscription');
     } else {
       setShowModal(true);
@@ -94,6 +98,7 @@ const Card = ({
       amount,
     });
     setShowModal(false);
+    router.push('/arbitrage');
   };
 
   const onClose = () => {
@@ -158,6 +163,23 @@ const Card = ({
                     value={amount}
                     onChange={(e) => setAmount(Number(e.target.value))}
                   />
+                  {coin === 'ETH' && amount <= 0.1 && (
+                    <span className="text-sm font-medium text-red-600">
+                      Please enter an amount greater than 0.1 ETH to withdraw.
+                    </span>
+                  )}
+                  {coin === 'VICA' && amount <= 120 && (
+                    <span className="text-sm font-medium text-red-600">
+                      Please enter an amount greater than the 120 VICA to
+                      withdraw.
+                    </span>
+                  )}
+                  {coin === 'ETH' && amount <= 3.6 && (
+                    <span className="text-sm font-medium text-red-600">
+                      Please enter an amount greater than the 3.6 USDT to
+                      withdraw.
+                    </span>
+                  )}
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
@@ -172,19 +194,39 @@ const Card = ({
               <div className="w-full flex flex-wrap justify-between gap-y-4">
                 <div className="flex flex-col">
                   <span>Receive amount</span>
-                  <span>Network fee</span>
+                  <span>Withdraw fee</span>
                 </div>
                 <div className="flex flex-col !ml-8 font-bold">
                   <span>
                     {amount && fee?.estimate_fees
-                      ? `${amount - fee.estimate_fees.toFixed(6)} ${coin}`
+                      ? (() => {
+                          if (coin === 'BTC') {
+                            return `${amount - 0.0001} BTC`;
+                          }
+                          if (coin === 'USDT') {
+                            return `${amount - 3.6} USDT`;
+                          }
+                          if (coin === 'VICA') {
+                            return `${amount - 120} VICA`;
+                          }
+                          return `${amount - fee.estimate_fees.toFixed(6)} ETH`;
+                        })()
                       : '--'}
                   </span>
-                  <span>{`${
-                    coin === 'BTC'
-                      ? '0.0001'
-                      : fee?.estimate_fees.toFixed(6) ?? '--'
-                  } ${coin === 'BTC' ? 'BTC' : 'ETH'}`}</span>
+                  <span>
+                    {(() => {
+                      if (coin === 'BTC') {
+                        return `0.0001 BTC`;
+                      }
+                      if (coin === 'USDT') {
+                        return `3.6 USDT`;
+                      }
+                      if (coin === 'VICA') {
+                        return `120 VICA`;
+                      }
+                      return `${fee?.estimate_fees.toFixed(6) ?? '--'} ETH`;
+                    })()}{' '}
+                  </span>
                 </div>
                 <div className="ml-auto w-auto md:w-full md:ml-0">
                   <Button
@@ -252,7 +294,7 @@ const Card = ({
               <div className="w-full flex flex-wrap justify-between gap-y-4">
                 <div className="flex flex-col">
                   <span>Total Sent:</span>
-                  <span>Network fee:</span>
+                  <span>Withdraw fee:</span>
                 </div>
                 <div className="flex flex-col !ml-8 font-bold">
                   <span>
@@ -286,7 +328,7 @@ const Card = ({
                   <span>{`${
                     coin === 'BTC'
                       ? 'BTC ( Bitcoin Network )'
-                      : 'ETH ( ERC 20 )'
+                      : `${coin} ( ERC 20 )`
                   }`}</span>{' '}
                   to this deposit address. This address does not support deposit
                   of non-fungible token

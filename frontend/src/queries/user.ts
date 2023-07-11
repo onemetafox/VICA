@@ -128,6 +128,26 @@ export const useChangePassword = () => {
 
   return mutation;
 };
+export const useUpadteForgetPassword = (token: any, uid: any) => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const mutation = useMutation(
+    (dt: FetchData) => AuthService.changePasswordAfterForget(dt, token, uid),
+    {
+      onSuccess: () => {
+        localStorage.removeItem('Session');
+        queryClient.invalidateQueries(['user']);
+        toast.success('Password changed successfully !');
+        router.push('/login');
+      },
+      onError: (error: any) => {
+        toast.error(error.non_field_errors[0]);
+      },
+    }
+  );
+  return mutation;
+};
+
 export const useFetchUser = () => {
   const result = useQuery(['user'], () => AuthService.user(), {
     initialData: null,

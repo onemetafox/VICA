@@ -11,7 +11,7 @@ import {
   ConverterInputTab,
 } from '../../components/Convert/_convert';
 
-const COUNTER_START = 30;
+const COUNTER_START = 730;
 
 type ConverterState = {
   loading: boolean;

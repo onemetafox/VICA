@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useCoinsReducer } from 'src/hooks/useCoinsReducer';
+import { useCoinsReducerETH } from 'src/hooks/useCoinsReducerETH';
 import { AiOutlineMenu } from 'react-icons/ai';
 import { RiSearchLine } from 'react-icons/ri';
 import { coinFullName } from 'src/utils/coins-full-name';
@@ -12,10 +13,12 @@ import { CoinsTypes } from 'src/types/coins';
 import { useGeoLocation } from 'src/hooks/useGeolocation';
 import { useFetchUser } from 'src/queries/user';
 import { useMutateCoinsConversion } from 'src/queries/coins';
+import { useRouter } from 'next/router';
 
 type Props = {
   variant: 'BUY' | 'SELL';
   offers: Offers[];
+  landedeCoin;
   paymentMethods: PaymentMethod[];
   paymentMethodRef: React.MutableRefObject<string>;
   filterData: {
@@ -35,6 +38,7 @@ type Props = {
 const Aside = ({
   offers,
   paymentMethods,
+  landedeCoin,
   variant,
   paymentMethodRef,
   filterData,
@@ -46,6 +50,7 @@ const Aside = ({
   const [isOpenPaymentMethods, setIsOpenPaymentMethods] = useState(false);
   const [ownerCountry, setOwnerCountry] = useState('');
   const { state, dispatch } = useCoinsReducer();
+  const { stateETH, dispatchETH } = useCoinsReducerETH();
   const [amount, setAmount] = useState('');
   const mutationCoinPrice = useMutateCoinsConversion();
   const mutationPaymentMethodPrice = useMutateCoinsConversion();
@@ -60,20 +65,30 @@ const Aside = ({
   } */
   const onFindOffers = () => {
     const country = countries.filter((ctr) => ctr.code === ownerCountry)[0]
-      .name;
+      .code;
     const coin = state.coinList1.selectedCoin;
     const newPaymentMethodObject = paymentMethods.filter(
       (pay: PaymentMethod) => pay?.name === paymentMethodRef.current
     )[0];
     if (amount === '') {
-      const newRowsData = [...offers].filter(
+      let newRowsData = [...offers].filter(
         (offer) =>
           offer.type === variant &&
           offer.currency === coin &&
           offer.payment_method === newPaymentMethodObject.id &&
-          offer?.username !== user?.username
-        // && offer?.user_country === country
+          offer?.username !== user?.username &&
+          offer?.user_country === country
       );
+      if (ownerCountry == 'ww') {
+        newRowsData = [...offers].filter(
+          (offer) =>
+            offer.type === variant &&
+            offer.currency === coin &&
+            offer.payment_method === newPaymentMethodObject.id &&
+            offer?.username !== user?.username
+        );
+      }
+
       setFilterData({
         coin,
         paymentMethodObject: newPaymentMethodObject,
@@ -139,8 +154,8 @@ const Aside = ({
             {buySell.toLowerCase()}
           </h1>
           <BuySellDropDown
-            dispatch={dispatch}
-            list={state.coinList1}
+            dispatch={landedeCoin == 'ETHER' ? dispatchETH : dispatch}
+            list={landedeCoin == 'ETHER' ? stateETH.coinList1 : state.coinList1}
             actionType="Update_first_list"
             bg="bg-white"
           />

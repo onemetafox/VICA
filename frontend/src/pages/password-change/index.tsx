@@ -5,15 +5,15 @@ import { Formik, Form } from 'formik';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import SignInUpLeft from 'src/components/User/SignInUpLeft';
 import Container from 'src/components/User/Container';
-import { LoginSchema } from 'src/utils/forms-schema';
+import { LoginSchema, PasswordConfirmSchema } from 'src/utils/forms-schema';
 import Input from 'src/components/Input';
 import Spinner from 'src/components/Spinner';
-import { useFetchUser, useLogin } from 'src/queries/user';
+import { useFetchUser, useUpadteForgetPassword } from 'src/queries/user';
 import { useRouter } from 'next/router';
 
 interface Values {
-  email: string;
-  password: string;
+  password1: string;
+  password2: string;
 }
 
 export const getStaticProps: GetStaticProps = async () => {
@@ -27,21 +27,26 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
-const Login = () => {
+const PasswordConfirmation = () => {
   const router = useRouter();
-  const { mutate, isLoading, isError } = useLogin();
   const { data: user } = useFetchUser();
+  const { pathname } = router;
+  const { uid, token } = router.query;
 
+  const { mutate, isLoading, isError } = useUpadteForgetPassword(token, uid);
   const onSubmit = (values: Values) => {
-    mutate({ ...values, username: values.email });
+    mutate({
+      ...values,
+      password1: values.password1,
+      password2: values.password2,
+    });
   };
   if (user) {
     router.push('/');
   }
   return (
-    <div className="w-full h-screen flex ">
-      <SignInUpLeft />
-      <Container type="login">
+    <div className="flex justify-center items-center ">
+      <Container type="PasswordConfirm">
         {isError && (
           <div className="w-96 sm:w-full py-5 px-2 text-center bg-red-100 text-red-600 border-t-2 border-red-600 mt-5">
             Invalid credentials
@@ -49,47 +54,46 @@ const Login = () => {
         )}
         <Formik
           initialValues={{
-            email: '',
-            password: '',
+            password1: '',
+            password2: '',
           }}
           validateOnChange={false}
           validateOnBlur={false}
-          validationSchema={LoginSchema}
+          validationSchema={PasswordConfirmSchema}
           onSubmit={onSubmit}
         >
           {({ handleChange, values, errors }) => (
-            <Form className="flex flex-col justify-start items-stretch w-[25.5rem] sm:w-full sm:text-sm mt-7">
-              <label htmlFor="email" className="mb-2">
-                Email
-              </label>
-              <Input
-                value={values.email}
-                onChange={handleChange}
-                id="email"
-                name="email"
-                placeholder="john@mail.com"
-                type="email"
-                autoComplete="username"
-                isError={errors.email}
-              />
-              {errors.email && (
-                <p className="text-red-600 mb-2 text-sm">{errors.email}</p>
-              )}
-              <label htmlFor="password" className="mb-2">
+            <Form className="flex flex-col justify-start items-center items-stretch w-[25.5rem] sm:w-full sm:text-sm mt-7">
+              <label htmlFor="password1" className="mb-2">
                 Password
               </label>
               <Input
-                value={values.password}
+                value={values.password1}
                 onChange={handleChange}
                 type="password"
-                name="password"
-                id="password"
+                name="password1"
+                id="password1"
                 placeholder="password"
-                autoComplete="current-password"
-                isError={errors.password}
+                isError={errors.password1}
               />
-              {errors.password && (
-                <p className="text-red-600 mb-2 text-sm">{errors.password}</p>
+              {errors.password1 && (
+                <p className="text-red-600 mb-2 text-sm">{errors.password1}</p>
+              )}
+
+              <label htmlFor="password2" className="mb-2">
+                Confirm Password
+              </label>
+              <Input
+                value={values.password2}
+                onChange={handleChange}
+                type="password"
+                name="password2"
+                id="password2"
+                placeholder="Confirm password"
+                isError={errors.password2}
+              />
+              {errors.password2 && (
+                <p className="text-red-600 mb-2 text-sm">{errors.password2}</p>
               )}
 
               <button
@@ -99,23 +103,18 @@ const Login = () => {
               >
                 {isLoading ? (
                   <>
-                    <Spinner /> <span>Loading...</span>{' '}
+                    <Spinner /> <span />{' '}
                   </>
                 ) : (
-                  <span>Login</span>
+                  <span>Login </span>
                 )}
               </button>
             </Form>
           )}
         </Formik>
-        <Link href="/password-reset">
-          <span className="text-blue-600 hover:text-blue-400 text-center text-sm mt-5 cursor-pointer">
-            Forgot your password ?
-          </span>
-        </Link>
       </Container>
     </div>
   );
 };
 
-export default Login;
+export default PasswordConfirmation;

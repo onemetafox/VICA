@@ -1,5 +1,7 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable prettier/prettier */
 import { useState } from 'react';
-import { GrTransaction } from 'react-icons/gr';
+import { GrTransaction, GrLink } from 'react-icons/gr';
 import { Table, Modal, Button } from 'flowbite-react';
 import Container from './Container';
 import Card from './Card';
@@ -52,14 +54,13 @@ const Dashboard = ({ user, transactions }: any) => {
           {transactions?.length ? (
             <Table striped>
               <Table.Head>
-                <Table.HeadCell>Status</Table.HeadCell>
                 <Table.HeadCell>Date</Table.HeadCell>
+                <Table.HeadCell>Type</Table.HeadCell>
                 <Table.HeadCell>Currency</Table.HeadCell>
                 <Table.HeadCell>Amount</Table.HeadCell>
-                <Table.HeadCell>Revenue percent</Table.HeadCell>
-                <Table.HeadCell>Current revenue</Table.HeadCell>
-                <Table.HeadCell>Estimate revenue</Table.HeadCell>
-                <Table.HeadCell>Staking period</Table.HeadCell>
+                <Table.HeadCell>From</Table.HeadCell>
+                <Table.HeadCell>To</Table.HeadCell>
+                <Table.HeadCell>Tnx</Table.HeadCell>
                 {/* <Table.HeadCell>
                   <span className="sr-only">View</span>
           </Table.HeadCell> */}
@@ -70,37 +71,41 @@ const Dashboard = ({ user, transactions }: any) => {
                     key={transaction?.id}
                     className="bg-white dark:border-gray-700 dark:bg-gray-800"
                   >
-                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                      {transaction?.status}
-                    </Table.Cell>
                     <Table.Cell>
-                      {transaction?.created_at.split('T')[0]}
+                      {transaction?.timestamp &&
+                        new Date(transaction.timestamp * 1000).toLocaleString(
+                          'en-US',
+                          { timeZone: 'UTC' }
+                        )}
+                    </Table.Cell>
+                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                      {transaction?.to == ethWallet?.address ||
+                        transaction?.to == btcWallet?.address
+                        ? 'Deposit'
+                        : 'Withdraw'}
                     </Table.Cell>
                     <Table.Cell>{transaction?.currency}</Table.Cell>
-                    <Table.Cell>
+                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                       {parseFloat(parseFloat(transaction?.amount).toFixed(6))}
                     </Table.Cell>
-                    <Table.Cell>{`${transaction?.revenue_percent?.period_percent}%`}</Table.Cell>
-                    <Table.Cell>
-                      {parseFloat(transaction?.current_revenue?.toFixed(6))}
+                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{transaction?.to == ethWallet?.address || transaction?.to == btcWallet?.address ? (transaction?.from ? transaction?.from : 'This Wallet') : 'This Wallet'}</Table.Cell>
+                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                      {transaction?.to == ethWallet?.address ||
+                        transaction?.to == btcWallet?.address
+                        ? 'This Wallet'
+                        : transaction?.to}
                     </Table.Cell>
                     <Table.Cell>
-                      {parseFloat(transaction?.estimate_revenue?.toFixed(6))}
-                    </Table.Cell>
-                    <Table.Cell>
-                      {`${
-                        transaction?.stacking_period?.years
-                          ? `${transaction?.stacking_period?.years} years,`
-                          : ''
-                      }  ${
-                        transaction?.stacking_period?.months
-                          ? `${transaction?.stacking_period?.months} months,`
-                          : ''
-                      } ${
-                        transaction?.stacking_period?.days
-                          ? `${transaction?.stacking_period?.days} days`
-                          : ''
-                      }`}
+                      <div className="inline-flex items-center">
+                        <a
+                          target="_blank"
+                          href={`https://etherscan.io/tx/${transaction?.hash}`}
+                          rel="noreferrer"
+                        >
+                          {transaction?.hash}
+                        </a>
+                        <GrLink className="text-blue-700 text-xl ml-2" />
+                      </div>
                     </Table.Cell>
                     {/* <Table.Cell>
                       <Button onClick={onViewTransaction}>View</Button>

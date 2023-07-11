@@ -4,6 +4,7 @@ import Intro from 'src/components/Wallet/Intro';
 import Dashboard from 'src/components/arbitrage/Dashboard';
 import { useFetchArbitrageTransactions } from 'src/queries/transactions';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 export const getStaticProps = async () => {
   const queryClient = new QueryClient();

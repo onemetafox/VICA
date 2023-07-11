@@ -11,7 +11,7 @@ const NavRoutes = () => {
       <NavRoute route="/sell">Sell</NavRoute>
       <NavRoute route="/wallet">Wallet</NavRoute>
       <NavRoute route="/arbitrage">Arbitrage</NavRoute>
-      <NavRoute route="/convert">Convert</NavRoute>
+      {/* <NavRoute route="/convert">Convert</NavRoute> */}
       {data && <NavRoute route="/create-an-offer">Create an Offer</NavRoute>}
     </div>
   );

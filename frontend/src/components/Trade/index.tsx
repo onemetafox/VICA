@@ -4,10 +4,11 @@ import Link from 'next/link';
 import { FiThumbsUp, FiThumbsDown } from 'react-icons/fi';
 import { IoIosSend } from 'react-icons/io';
 import { BsInfoCircle } from 'react-icons/bs';
-import { IoTimeOutline } from 'react-icons/io5';
+import { IoSpeedometer, IoTimeOutline } from 'react-icons/io5';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { GrAttachment } from 'react-icons/gr';
 import CancelTrade from 'src/components/Trade/Modals/CancelTrade';
+import SendReport from 'src/components/Trade/Modals/SendReportModal';
 import Container from 'src/components/common/Container';
 import InfoCard from 'src/components/common/InfoCard';
 import { coinFullName } from 'src/utils/coins-full-name';
@@ -37,6 +38,7 @@ const Trade = () => {
   const [closeRemember, setIsCaRememberClosed] = useState(false);
   const [closekepp, setIsCakeepClosed] = useState(false);
   const [closeTrade, setCloseTrade] = useState(false);
+  const [sendReportt, setSendReport] = useState(false);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [message, setMessage] = useState('');
@@ -55,9 +57,13 @@ const Trade = () => {
   const receive = offer?.amount;
   const tradeSpeed = offer?.time_limit;
   const terms = offer?.terms;
+  const Previews = offer?.reviews?.positive;
+  const Nreviews = offer?.reviews?.negative;
+
   const order = relatedOrders?.filter(
     (ordr: any) => ordr?.order_no == orderId
   )[0];
+
   const messages = order?.messages;
 
   const isOfferOwner = offer?.username === user?.username;
@@ -77,7 +83,8 @@ const Trade = () => {
     }
   }
 
-  let mainCoin: CoinsTypes = 'BTC';
+  let mainCoin: CoinsTypes =
+    offer?.currency == 'ETHER' ? 'ETH' : offer?.currency;
 
   const mainCoinParam = urlParams.get('mainCoin');
   const paymentMethodName = urlParams.get('paymentMethodName');
@@ -117,7 +124,7 @@ const Trade = () => {
     }
   };
   if (!offer) {
-    return <h1>Loading...</h1>;
+    return <h1>.</h1>;
   }
   if (order?.status === 'COMPLETED' && !isOrderCompleted) {
     toast.success('Order completed successfully !');
@@ -262,6 +269,7 @@ const Trade = () => {
             <button
               type="button"
               className="bg-white hover:bg-gray-50 transition-all text-xs p-2 px-4 border border-darkGray rounded"
+              onClick={() => setSendReport(true)}
             >
               Report
             </button>
@@ -279,20 +287,15 @@ const Trade = () => {
                 <p className="text-blue-600 ml-2 cursor-pointer hover:text-blue-500">
                   {offer?.username}
                 </p>
-                <img
-                  alt="United States"
-                  src="http://purecatamphetamine.github.io/country-flag-icons/3x2/MA.svg"
-                  className="w-5 h-5 ml-3"
-                />
               </div>
               <div className="flex text-xs">
                 <div className="flex items-center justify-center rounded bg-green-100 border-2 border-green-300 w-14">
                   <FiThumbsUp className="text-green-700" />
-                  <p className="text-[0.6rem] ml-1 font-bold">9860</p>
+                  <p className="text-[0.6rem] ml-1 font-bold">{Previews}</p>
                 </div>
                 <div className="ml-2 flex items-center justify-center rounded bg-red-100 border-2 border-red-300 w-14">
                   <FiThumbsDown className="text-red-700" />
-                  <p className="text-[0.6rem] ml-1 font-bold">0</p>
+                  <p className="text-[0.6rem] ml-1 font-bold">{Nreviews}</p>
                 </div>
               </div>
             </div>
@@ -373,6 +376,11 @@ const Trade = () => {
           </div>
         </div>
         <CancelTrade onClose={() => setCloseTrade(false)} isOpen={closeTrade} />
+        <SendReport
+          orderId={orderId}
+          onClose={() => setSendReport(false)}
+          isOpen={sendReportt}
+        />
         {/*  <SuccessTrade
         onClose={() => setSuccessTrade(false)}
         isOpen={successTrade}

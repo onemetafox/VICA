@@ -70,7 +70,7 @@ const PasswordReset = () => {
                 onChange={handleChange}
                 id="email"
                 name="email"
-                placeholder="john@acme.com"
+                placeholder="john@mail.com"
                 type="email"
                 autoComplete="username"
                 isError={errors.email}

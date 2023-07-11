@@ -99,6 +99,8 @@ class AuthService {
       return null;
     }
     const token = localStorage.getItem('Session');
+    console.log('token', token);
+
     return token
       ? this.execute('GET', 'rest-auth/user/', undefined, token)
       : null;
@@ -111,6 +113,20 @@ class AuthService {
     const token = localStorage.getItem('Session');
     return token
       ? this.execute('POST', 'rest-auth/password/change/', data, token)
+      : null;
+  }
+
+  async changePasswordAfterForget(data: FetchData, token: string, uid: string) {
+    if (typeof window === undefined) {
+      return null;
+    }
+    return token
+      ? this.execute(
+          'POST',
+          `rest-auth/password/reset/confirm/${uid}/${token}`,
+          undefined,
+          undefined
+        )
       : null;
   }
 
@@ -232,6 +248,21 @@ class AuthService {
       ? this.execute(
           'POST',
           `p2p/create-message/${data?.orderId}`,
+          { message: data?.message },
+          token
+        )
+      : null;
+  }
+
+  async SendReport(data: FetchData) {
+    if (typeof window === undefined) {
+      return null;
+    }
+    const token = localStorage.getItem('Session');
+    return token
+      ? this.execute(
+          'POST',
+          `p2p/create-dispute/${data?.orderId}`,
           { message: data?.message },
           token
         )

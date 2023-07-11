@@ -1,5 +1,10 @@
 export const countries = [
   {
+    name: 'WorldWide',
+    dial_code: '+',
+    code: 'ww',
+  },
+  {
     name: 'Afghanistan',
     dial_code: '+93',
     code: 'AF',

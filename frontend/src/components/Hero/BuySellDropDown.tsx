@@ -15,6 +15,7 @@ type Props = {
   dispatch: Dispatch<ACTIONTYPE>;
   width?: string;
   bg?: string;
+  landedeCoin?: string;
 };
 
 const BuySellDropDown = ({
@@ -23,10 +24,10 @@ const BuySellDropDown = ({
   dispatch,
   width = 'w-full',
   bg = 'bg-lightGray',
+  landedeCoin,
 }: Props) => {
   const { toggle, setToggle, dropDownRef } = useDropDown();
   const [coin, setCoin] = useState(list.selectedCoin);
-
   const handleSelectCoin = (
     e: MouseEvent<HTMLElement, globalThis.MouseEvent>
   ) => {

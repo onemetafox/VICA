@@ -18,6 +18,14 @@ const nextConfig = {
     // url: 'https://crypto.najaed.com/',
     url: 'http://localhost:8000/',
   },
+  async rewrites() {
+    return [
+      {
+        source: '/password-change/:uid/:token',
+        destination: '/password-change/',
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

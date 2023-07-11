@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { IoIosAdd } from 'react-icons/io';
 import { coinFullName } from 'src/utils/coins-full-name';
@@ -7,6 +7,7 @@ import Nav from 'src/components/Nav';
 import { useFetchUser } from 'src/queries/user';
 import { CoinsTypes } from 'src/types/coins';
 import { PaymentMethod, Offers } from 'src/types/offers';
+import router, { useRouter } from 'next/router';
 import Table from './Table';
 import Advantages from './Advantages';
 import Aside from './Aside';
@@ -20,8 +21,15 @@ type Props = {
 const Container = ({ variant, offers, paymentMethods }: Props) => {
   const buySell = variant === 'BUY' ? 'SELL' : 'BUY';
   const { data: user } = useFetchUser();
+  const { query } = useRouter();
+  const { currency } = query;
   const coinRef = useRef<CoinsTypes>('BTC');
   const paymentMethodRef = useRef('ETHER');
+
+  if (currency === 'ETHER' || currency === 'BTC') {
+    coinRef.current = currency;
+    paymentMethodRef.current = 'USDT';
+  }
 
   const initCoin = coinRef.current;
   const initPaymentMethodObject = paymentMethods?.filter(
@@ -52,6 +60,7 @@ const Container = ({ variant, offers, paymentMethods }: Props) => {
           paymentMethodRef={paymentMethodRef}
           filterData={filterData}
           setFilterData={setFilterData}
+          landedeCoin={coinRef.current}
         />
         <section className="min-h-screen  flex flex-col items-start justify-start lg:items-center sm:justify-center w-full pr-20 pl-10 pt-16 pb-32 ed:pt-10 ed:pb-20 lg:px-16 asm:px-3 lg:bg-lightGray">
           <h1 className="mb-5 font-black text-4xl text-blue-800 mr-3 capitalize ed:text-2xl lg:hidden">
@@ -76,7 +85,7 @@ const Container = ({ variant, offers, paymentMethods }: Props) => {
             />
           )}
 
-          <Link href="/create-an-offer">
+          <Link href={`/create-an-offer?opt=${buySell}`}>
             <div className="flex items-center rounded px-4 py-3 bg-blue-600 text-white cursor-pointer hover:bg-blue-500 mt-7">
               <IoIosAdd className="text-white text-3xl" />
               <span>Create an offer</span>

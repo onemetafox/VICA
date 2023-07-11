@@ -1,13 +1,13 @@
 import { useFetchUser } from 'src/queries/user';
 import Intro from 'src/components/Wallet/Intro';
 import Dashboard from 'src/components/Wallet/Dashboard';
-import { useFetchArbitrageTransactions } from 'src/queries/transactions';
+import { useFetchTransactions } from 'src/queries/transactions';
 
 const Wallet = () => {
   const { data, isLoading } = useFetchUser();
-  const { data: arbitrageTransactions } = useFetchArbitrageTransactions();
+  const { data: arbitrageTransactions } = useFetchTransactions();
   const transactionsByDate = arbitrageTransactions?.sort(
-    (a, b) => +new Date(b.created_at) - +new Date(a.created_at)
+    (a, b) => b.timestamp - a.timestamp
   );
 
   if (isLoading) {

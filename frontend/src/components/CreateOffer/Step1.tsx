@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AiOutlineMenu } from 'react-icons/ai';
 import { useCoinsReducer } from 'src/hooks/useCoinsReducer';
 import { OfferContext } from 'src/hooks/useStepReducer';
@@ -7,6 +7,7 @@ import PaymentMethods from 'src/components/PaymentMethods';
 import RadioBullet from 'src/components/common/RadioBullet';
 import OfferContainer from 'src/components/CreateOffer/Container';
 import { coinFullName } from 'src/utils/coins-full-name';
+import { useRouter } from 'next/router';
 import LeftSide from './LeftSide';
 import RightSide from './RightSide';
 import ActionButtons from './ActionButtons';
@@ -16,6 +17,8 @@ const Payment = () => {
   const [paymentMethod, setPaymentMethod] = useState('ETHER');
   const { stepState, stepDispatch } = useContext(OfferContext);
   const { state, dispatch } = useCoinsReducer(stepState.firstCoin);
+  const { query } = useRouter();
+  const { opt } = query;
   const {
     buySell,
     firstCoin: stepFirstCoin,
@@ -40,6 +43,12 @@ const Payment = () => {
       stepDispatch({ type: e.target.value });
     }
   };
+
+  useEffect(() => {
+    if (opt == 'BUY') {
+      stepDispatch({ type: opt });
+    }
+  }, [query.opt]);
   return (
     <OfferContainer>
       <LeftSide>

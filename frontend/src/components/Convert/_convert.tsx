@@ -3,6 +3,7 @@ import { Spinner } from 'flowbite-react';
 import CoinsDropdown from 'src/components/common/CoinsDropdown';
 import { CoinsTypes } from 'src/types/coins';
 import { TbRefresh } from 'react-icons/tb';
+import { useFetchUser } from 'src/queries/user';
 
 type ExchangeRateProps = {
   from: CoinsTypes;
@@ -73,6 +74,9 @@ export const ConverterInputTab = ({
   disabled,
   handelCoinChange,
 }: ConverterInputTabProps) => {
+  const { data } = useFetchUser();
+  console.log('coinData.value', coinData);
+
   return (
     <div className="w-1/2 md:w-full	border-b border-dmGray last:border-l last:md:border-l-0 pl-8 pr-12 py-8">
       <div className="flex justify-between text-sm">
